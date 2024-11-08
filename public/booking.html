@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .book-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .return-button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .return-button:hover {
+            background-color: #45a049;
+        }
+
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            color: #ddd;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
+        }
+        .user-profile:hover {
+            color: white;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+        .dropdown-menu::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent #fff transparent;
+        }
+        .user-profile.active .dropdown-menu {
+            display: block;
+        }
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .navbar {
+                flex-direction: column;
+            }
+            .navbar .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 10px;
+            }
+            .nav-links a {
+                margin: 10px 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">Library System</a>
+        <a href="index.html">home</a>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <!-- <a href="user-dashboard.html">Dashboard</a>
+            <a href="#">Account</a>
+            <a href="user-login.html">Logout</a> -->
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <!-- <div class="user-profile" onclick="toggleDropdown()">
+            <span id="user-name">[User Name]</span>
+            <div class="dropdown-menu">
+                <a href="#">My Profile</a>
+                <a href="#">Settings</a>
+                <div class="dropdown-divider"></div>
+                <a href="#">Logout</a>
+                <a href="index.html">home</a>
+            </div> -->
+        </div>
+    </nav>
+
+    <script>
+        function toggleDropdown() {
+            document.querySelector('.user-profile').classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile')) {
+                document.querySelector('.user-profile').classList.remove('active');
+            }
+        }
+    </script>
+
+    <h3>Available Books</h3>
+    <ul id="book-list"></ul>
+
+    <!-- <h3>Borrowed Books</h3> -->
+    <ul id="borrowed-books"></ul>
+
+    <script>
+        let availableBooks = [];
+        let borrowedBooks = [];
+
+        // Fetch and display available books
+        function loadBooks() {
+            fetch('/books')
+                .then(response => response.json())
+                .then(books => {
+                    availableBooks = books;
+                    renderAvailableBooks();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Render the available books list (without borrow button)
+        function renderAvailableBooks() {
+            const bookList = document.getElementById('book-list');
+            bookList.innerHTML = '';  // Clear the list
+
+            availableBooks.forEach(book => {
+                const li = document.createElement('li');
+                li.className = 'book-item';
+                li.innerHTML = `
+                    <span>${book.title} - ${book.genre}</span>
+                `;
+                bookList.appendChild(li);
+            });
+        }
+
+        // Render the borrowed books list
+        function renderBorrowedBooks() {
+            const borrowedBookList = document.getElementById('borrowed-books');
+            borrowedBookList.innerHTML = '';  // Clear the list
+
+            borrowedBooks.forEach(book => {
+                const li = document.createElement('li');
+                li.className = 'book-item';
+                li.innerHTML = `
+                    <span>${book.title} - ${book.genre}</span>
+                    <button class="return-button" onclick="returnBook('${book.title}')">Return</button>
+                `;
+                borrowedBookList.appendChild(li);
+            });
+        }
+
+        // Return the book and move it back to the available books list
+        function returnBook(bookTitle) {
+            const bookIndex = borrowedBooks.findIndex(book => book.title === bookTitle);
+            if (bookIndex !== -1) {
+                const returnedBook = borrowedBooks.splice(bookIndex, 1)[0];
+                availableBooks.push(returnedBook);
+                renderAvailableBooks();
+                renderBorrowedBooks();
+            }
+        }
+
+        // Load books when the page loads
+        document.addEventListener('DOMContentLoaded', loadBooks);
+
+        function loadUserInfo() {
+            fetch('/user-info')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username) {
+                        document.getElementById('user-name').textContent = data.username;
+                    } else {
+                        console.error('Username not found.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                });
+        }
+
+        // Load user info when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch user info when the page loads
+            fetch('/user-info')
+                .then(response => response.json())
+                .then(data => {
+                    // Check if the user data is returned successfully
+                    if (data.username) {
+                        document.getElementById('user-name').textContent = data.username;
+                    } else {
+                        console.error('Error fetching user name:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

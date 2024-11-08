@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page with Registration Popup</title>
+    <style>
+        /* Basic styling for the login page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #218838;
+        }
+        
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Modal (popup) styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="email">Email</label>
+            <input type="email" id="login-email" name="email" required>
+        
+            <label for="password">Password</label>
+            <input type="password" id="login-password" name="password" required>
+        
+            <button type="button" id="login-btn">Login</button>
+        </form>
+        <a href="index.html">Home</a>
+
+        <p>Don't have an account? <a href="#" id="open-register-btn">Create an account</a></p>
+    </div>
+
+    <!-- Registration Popup Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Create an Account</h2>
+            <form id="register-form">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+    
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email" name="email" required>
+    
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" name="password" required>
+    
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required>
+    
+                <button type="button" id="register-btn">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get elements for modal
+        const registerModal = document.getElementById('register-modal');
+        const openRegisterBtn = document.getElementById('open-register-btn');
+        const closeBtn = document.querySelector('.close-btn');
+    
+        // Open the registration modal when "Create an account" is clicked
+        openRegisterBtn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+            registerModal.style.display = 'block';
+        });
+    
+        // Close the modal when the close button is clicked
+        closeBtn.addEventListener('click', function () {
+            registerModal.style.display = 'none';
+        });
+    
+        // Close the modal when clicking outside of the modal content
+        window.addEventListener('click', function (event) {
+            if (event.target === registerModal) {
+                registerModal.style.display = 'none';
+            }
+        });
+    
+        // Registration handler
+        document.getElementById('register-btn').addEventListener('click', async function() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+    
+            // Validate if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+    
+            const data = { name, email, password };
+    
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data),
+                });
+    
+                const result = await response.text();
+    
+                // If registration is successful, alert and redirect to 'index.html'
+                if (result === 'Registration successful') {
+                    alert(result);
+                    window.location.href = '/user-login.html';  // Redirect to index page after successful registration
+                } else {
+                    alert(result);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    
+        // Login handler
+        document.getElementById('login-btn').addEventListener('click', async function() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+    
+            const data = { email, password };
+    
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data),
+                });
+    
+                const result = await response.text();
+    
+                // If login is successful, redirect to 'index.html'
+                if (result === 'Login successful') {
+                    alert(result);
+                    window.location.href = '/user-dashboard.html';  // Redirect to index page after successful login
+                } else {
+                    alert(result);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+    
+</body>
+</html>

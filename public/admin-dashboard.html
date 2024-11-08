@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        header {
+            height: 80px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .interactive-button {
+            background-color: #4CAF50;
+            border: none;
+            width: 200px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .interactive-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        .interactive-button:active {
+            transform: scale(0.95);
+        }
+        .book-list {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            text-align: left;
+        }
+        .book-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .book-list li {
+            background-color: #e0e0e0;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .book-list li span {
+            font-weight: bold;
+        }
+        .book-form {
+            margin-bottom: 20px;
+        }
+        .book-form input, .book-form select {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+    <a href="index.html">Logout</a>
+    <main>
+        <h2>Welcome, Admin!</h2>
+        <p><b>Manage the library's books and users here:</b></p>
+        <div class="button-container">
+            <button class="interactive-button" onclick="toggleBookForm()">Add Book</button>
+            <!-- <button class="interactive-button" onclick="deleteBook()">Delete Book</button> -->
+            <button class="interactive-button" onclick="manageBooks()">Manage Books</button>
+        </div>
+        <div class="user-list">
+            <h3>Registered Users</h3>
+            <ul id="user-list">
+                <!-- User items will be dynamically added here -->
+            </ul>
+        </div>
+        
+
+        <!-- Book Form to Add New Books -->
+        <div class="book-form" id="book-form" style="display:none;">
+            <input type="text" id="book-title" placeholder="Enter book title">
+            <select id="book-genre">
+                <option value="Biography">Biography</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Non-Fiction">Non-Fiction</option>
+                <option value="Science Fiction">Science Fiction</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Romance">Romance</option>
+                <option value="History">History</option>
+                <option value="Horro">Horro</option>
+                <option value="Drama">Drama</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Thiller">Thiller</option>
+                <option value="infromational">infromational</option>
+            </select>
+            <button class="interactive-button" onclick="submitBook()">Submit</button>
+            
+        </div>
+        <!-- <button onclick="renderBooks()">Update</button> -->
+
+        <div class="book-list">
+            <h3>Books in Library</h3>
+            <ul id="book-list">
+                <!-- Book items will be dynamically added here -->
+            </ul>
+        </div>
+    </main>
+   <script>
+    let books = [];
+
+// Function to render books in the list
+function renderBooks() {
+    const bookList = document.getElementById('book-list');
+    bookList.innerHTML = ''; // Clear current list
+
+    books.forEach(book => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${book.title}</span> <em>(${book.genre})</em>`;
+        bookList.appendChild(li);
+    });
+}
+
+// Toggle the book form visibility
+function toggleBookForm() {
+    const form = document.getElementById('book-form');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}
+
+// Submit the new book
+function submitBook() {
+    const bookTitle = document.getElementById('book-title').value;
+    const bookGenre = document.getElementById('book-genre').value;
+
+    if (bookTitle && bookGenre) {
+        const newBook = { id: books.length + 1, title: bookTitle, genre: bookGenre };
+        books.push(newBook);
+        renderBooks();  // Update the list
+        document.getElementById('book-title').value = '';  // Clear the form
+        toggleBookForm();  // Hide the form
+    } else {
+        alert("Please fill out both the title and genre.");
+    }
+}
+
+// Delete a book
+function deleteBook() {
+    const bookToDelete = prompt("Enter the title of the book to delete:");
+    if (bookToDelete) {
+        books = books.filter(book => book.title.toLowerCase() !== bookToDelete.toLowerCase());
+        renderBooks();
+    }
+}
+
+// Manage books (this can be further developed based on your needs)
+function manageBooks() {
+    alert("Manage Books functionality will be added later.");
+}
+
+// Render the books initially
+renderBooks();
+function submitBook() {
+    const bookTitle = document.getElementById('book-title').value;
+    const bookGenre = document.getElementById('book-genre').value;
+
+    console.log("Book Title:", bookTitle);
+    console.log("Book Genre:", bookGenre);
+
+    if (bookTitle && bookGenre) {
+        // Send book data to the server
+        fetch('/add-book', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: bookTitle, genre: bookGenre })
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            // Fetch the updated book list from the server after adding a new book
+            fetchBooksFromServer();  // Fetch and re-render books
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        // Clear the form
+        document.getElementById('book-title').value = '';
+        toggleBookForm();
+    } else {
+        alert("Please fill out both the title and genre.");
+    }
+}
+// Function to fetch books from the server
+function fetchBooksFromServer() {
+    fetch('/get-books')
+    .then(response => response.json())
+    .then(data => {
+        books = data;  // Update the local books array with the data from the server
+        renderBooks(); // Re-render the books
+    })
+    .catch(error => {
+        console.error('Error fetching books:', error);
+    });
+
+}
+function renderBooks() {
+    const bookList = document.getElementById('book-list');
+    bookList.innerHTML = ''; // Clear current list
+
+    books.forEach(book => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${book.title}</span> <em>(${book.genre})</em>`;
+        bookList.appendChild(li);
+    });
+}
+function deleteBook(bookId) {
+    fetch(`/delete-book/${bookId}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data); // Show a message on success
+        fetchBooksFromServer(); // Fetch and re-render books
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+
+
+   </script>
+  <script>
+    // Function to fetch users from the server
+function fetchUsersFromServer() {
+    fetch('/get-users')
+        .then(response => response.json())
+        .then(data => {
+            renderUsers(data);
+        })
+        .catch(error => {
+            console.error('Error fetching users:', error);
+        });
+}
+
+// Function to render users in the list
+function renderUsers(users) {
+    const userList = document.getElementById('user-list');
+    userList.innerHTML = ''; // Clear the list
+
+    users.forEach(user => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>ID: ${user.id}</span> <em>Username: ${user.name}</em> <em>Email: ${user.email}</em>`;
+        userList.appendChild(li);
+    });
+}
+
+// Fetch users when the page loads
+document.addEventListener('DOMContentLoaded', fetchUsersFromServer);
+
+  </script>
+   <script>
+    function renderBooks() {
+ const bookList = document.getElementById('book-list');
+ bookList.innerHTML = ''; // Clear current list
+
+ books.forEach(book => {
+     console.log(book); // Log each book to verify the structure
+     const li = document.createElement('li');
+     li.innerHTML = `<span>${book.title}</span> <em>(${book.genre})</em> 
+                     <button onclick="deleteBook(${book.id})">Delete</button>`;
+     bookList.appendChild(li);
+ });
+}
+
+
+
+function deleteBook(bookId) {
+ console.log("Deleting book with ID:", bookId); // Check that the ID is correct
+
+ fetch(`/delete-book/${bookId}`, {
+     method: 'DELETE',
+ })
+ .then(response => response.text())
+ .then(data => {
+     alert(data); // Show a message on success
+     fetchBooksFromServer(); // Fetch and re-render books
+ })
+ .catch(error => {
+     console.error('Error:', error);
+ });
+}
+
+
+ </script>
+</body>
+</html>

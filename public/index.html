@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <!-- Bootstrap CSS (for the carousel) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Internal CSS -->
+    <style>
+        /* General styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation bar */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+           
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #575757;
+ color: rgb(255, 255, 255);
+            text-decoration: none;
+        }
+
+        /* Header section */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        /* Carousel section */
+       
+     a{
+            text-decoration: none;
+        }
+        .navabar{
+            text-decoration: none;
+        }
+        #logo{
+            height: 80px;
+            width: 80px;
+            margin-left: 50px;
+            border: solid white 2px;
+            border-radius: 50%;
+        }
+      
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="index.html"  class="navbar">Home</a></li>
+            <li><a href="booking.html" class="navbar">Books</a></li>
+            <li><a href="contact.html" class="navbar">Contact</a></li>
+            <li><a href="user-login.html" class="navbar">User Login</a></li>
+            <li><a href="admin-login.html" class="navbar">Admin Login</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header style="display: flex;">
+        <div id="logo"><img src="img/kisspng-vector-graphics-book-stock-illustration-logo-research-vector-book-transparent-amp-png-clipart-1713893611584.webp" alt="" style="height: 40px;width:60px;margin-top: 20px;"></div>
+        <b><h1 style="margin-left:430px; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;">Welcome to the Bookery</h1></b>
+    </header>
+   <!-- Books -->
+
+   <div class="container-xxl py-5" style="display: flex;justify-content: space-evenly;">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title text-center text-primary text-uppercase">Our book collections</h6>
+            <h1 class="mb-5">Explore Our E-library <span class="text-primary text-uppercase"></span></h1>
+        </div>
+        <div class="row g-4">
+            <!-- First three destination cards here -->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="package-item shadow rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="img/photo_2024-10-05_08-39-04 (2).jpg" alt="">
+                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">₹10,000/-</small>
+                    </div>
+                    <div class="p-4 mt-2">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">The origin of speceis</h5>
+                            <div class="ps-2">
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                            </div>
+                        </div>
+                        <p class="text-body mb-3">His adventure turned into one of the greatest discoveries in the history of mankind - the theory of evolution. What Darwin found along his travels, and what he would eventually declare to the scientific community and broader world, was that existing organisms better suited for adaptation to their environment survive, while those that are poorly suited to their environment do not.</p>
+                        <div class="d-flex justify-content-between">
+                            <!-- <a class="btn btn-sm btn-primary rounded py-2 px-4" href="">View Demo</a> -->
+                            <a class="btn btn-sm btn-dark rounded py-2 px-4" href="" onclick="alert('You have to login')">Borrow Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--second-->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="package-item shadow rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="img/photo_2024-10-05_08-39-05 (4).jpg" alt="">
+                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">₹10,000/-</small>
+                    </div>
+                    <div class="p-4 mt-2">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">The origin of speceis</h5>
+                            <div class="ps-2">
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                            </div>
+                        </div>
+                        <p class="text-body mb-3">His adventure turned into one of the greatest discoveries in the history of mankind - the theory of evolution. What Darwin found along his travels, and what he would eventually declare to the scientific community and broader world, was that existing organisms better suited for adaptation to their environment survive, while those that are poorly suited to their environment do not.</p>
+                        <div class="d-flex justify-content-between">
+                            <!-- <a class="btn btn-sm btn-primary rounded py-2 px-4" href="">View Demo</a> -->
+                            <a class="btn btn-sm btn-dark rounded py-2 px-4" href="" onclick="alert('You have to login')">Borrow Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--third-->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="package-item shadow rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="img/photo_2024-10-05_08-39-04 (6).jpg" alt="">
+                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">₹10,000/-</small>
+                    </div>
+                    <div class="p-4 mt-2">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">The origin of speceis</h5>
+                            <div class="ps-2">
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                            </div>
+                        </div>
+                        <p class="text-body mb-3">His adventure turned into one of the greatest discoveries in the history of mankind - the theory of evolution. What Darwin found along his travels, and what he would eventually declare to the scientific community and broader world, was that existing organisms better suited for adaptation to their environment survive, while those that are poorly suited to their environment do not.</p>
+                        <div class="d-flex justify-content-between">
+                            <!-- <a class="btn btn-sm btn-primary rounded py-2 px-4" href="">View Demo</a> -->
+                            <a class="btn btn-sm btn-dark rounded py-2 px-4" href="" onclick="alert('You have to login')">Borrow Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap JS (for the carousel) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

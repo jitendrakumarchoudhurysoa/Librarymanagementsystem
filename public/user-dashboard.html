@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .book-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .borrow-button, .return-button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .borrow-button:hover, .return-button:hover {
+            background-color: #45a049;
+        }
+        .borrow-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        /* new changes */
+    
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            color: #ddd;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
+        }
+        .user-profile:hover {
+            color: white;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+        .dropdown-menu::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent #fff transparent;
+        }
+        .user-profile.active .dropdown-menu {
+            display: block;
+        }
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .navbar {
+                flex-direction: column;
+            }
+            .navbar .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 10px;
+            }
+            .nav-links a {
+                margin: 10px 0;
+                text-align: center;
+            }
+        }
+        .print-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+        .watermark {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 40px;
+            color: grey;
+            transform: rotate(-30deg);
+        }
+        /* Rest of your CSS styles remain here */
+
+       
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">Library System</a>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="user-dashboard.html">Dashboard</a>
+            <a href="#">Account</a>
+            <a href="user-login.html">Logout</a>
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <div class="user-profile" onclick="toggleDropdown()">
+            <span id="user-name">[User Name]</span>
+            <div class="dropdown-menu">
+                <a href="#">My Profile</a>
+                <a href="#">Settings</a>
+                <div class="dropdown-divider"></div>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        function toggleDropdown() {
+            document.querySelector('.user-profile').classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile')) {
+                document.querySelector('.user-profile').classList.remove('active');
+            }
+        }
+    </script>
+
+
+        <h3>Available Books</h3>
+        <ul id="book-list"></ul>
+
+        <h3>Borrowed Books</h3>
+        <ul id="borrowed-books"></ul>
+
+        <!-- Borrow Confirmation Popup -->
+        <div class="popup-overlay" id="popup-overlay"></div>
+        <div class="borrow-popup" id="borrow-popup">
+            <p>Are you sure you want to borrow <span id="book-title"></span>?</p>
+            <button class="borrow-button" id="confirm-borrow">Yes, Borrow</button>
+            <button class="borrow-button" onclick="closePopup()">Cancel</button>
+            
+        </div>
+        <button class="print-button" onclick="generateInvoice()">Print Invoice</button>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+            // Function to generate the PDF invoice
+            <script>
+        // Function to generate the PDF invoice
+        function generateInvoice() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            let yPosition = 10;  // Start y position for text
+
+            // Add watermark
+            doc.setFontSize(80);
+            doc.setTextColor(150);
+            doc.text("Bookery", 35, 100, { angle: -30 });
+
+            doc.setFontSize(14);
+            doc.setTextColor(0);
+
+            // Add Title
+            doc.text("Borrowed Books Invoice", 10, yPosition);
+            yPosition += 10;
+
+            // Add Date and Time
+            const date = new Date();
+            doc.text(`Date: ${date.toLocaleDateString()}`, 10, yPosition);
+            doc.text(`Time: ${date.toLocaleTimeString()}`, 10, yPosition + 10);
+            yPosition += 20;
+
+            // Check if any books are borrowed
+            if (borrowedBooks.length === 0) {
+                doc.text("No books borrowed.", 10, yPosition);
+            } else {
+                // Add Borrowed Books to the Invoice
+                doc.text("Borrowed Books:", 10, yPosition);
+                yPosition += 10;
+
+                borrowedBooks.forEach((book, index) => {
+                    doc.text(`${index + 1}. ${book.title} - ${book.genre}`, 10, yPosition);
+                    yPosition += 10;
+                });
+            }
+
+            // Save the PDF
+            doc.save("Borrowed_Books_Invoice.pdf");
+        }
+
+        // Your existing scripts for fetching books and rendering them
+        document.addEventListener('DOMContentLoaded', loadBooks);
+    </script>
+    <script>
+        let availableBooks = [];
+        let borrowedBooks = [];
+
+        // Fetch and display available books
+        function loadBooks() {
+            fetch('/books')
+                .then(response => response.json())
+                .then(books => {
+                    availableBooks = books;
+                    renderAvailableBooks();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Render the available books list
+        function renderAvailableBooks() {
+            const bookList = document.getElementById('book-list');
+            bookList.innerHTML = '';  // Clear the list
+
+            availableBooks.forEach(book => {
+                const li = document.createElement('li');
+                li.className = 'book-item';
+                li.innerHTML = `
+                    <span>${book.title} - ${book.genre}</span>
+                    <button class="borrow-button" onclick="openPopup('${book.title}')" style="width: 150px;">Borrow</button>
+                `;
+                bookList.appendChild(li);
+            });
+        }
+
+        // Open the borrow confirmation popup
+        function openPopup(bookTitle) {
+            document.getElementById('book-title').textContent = bookTitle;
+            document.getElementById('popup-overlay').style.display = 'block';
+            document.getElementById('borrow-popup').style.display = 'block';
+
+            // Set the confirmation action for borrowing the book
+            document.getElementById('confirm-borrow').onclick = function() {
+                borrowBook(bookTitle);
+            };
+        }
+
+        // Close the borrow confirmation popup
+        function closePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
+            document.getElementById('borrow-popup').style.display = 'none';
+        }
+
+        // Borrow the book and move it to the borrowed books list
+        function borrowBook(bookTitle) {
+            const bookIndex = availableBooks.findIndex(book => book.title === bookTitle);
+            if (bookIndex !== -1) {
+                const borrowedBook = availableBooks.splice(bookIndex, 1)[0];
+                borrowedBooks.push(borrowedBook);
+                renderAvailableBooks();
+                renderBorrowedBooks();
+
+                // Close the popup
+                closePopup();
+            }
+        }
+
+        // Render the borrowed books list
+        function renderBorrowedBooks() {
+            const borrowedBookList = document.getElementById('borrowed-books');
+            borrowedBookList.innerHTML = '';  // Clear the list
+
+            borrowedBooks.forEach(book => {
+                const li = document.createElement('li');
+                li.className = 'book-item';
+                li.innerHTML = `
+                    <span>${book.title} - ${book.genre}</span>
+                    <button class="return-button" onclick="returnBook('${book.title}')">Return</button>
+                `;
+                borrowedBookList.appendChild(li);
+            });
+        }
+
+        // Return the book and move it back to the available books list
+        function returnBook(bookTitle) {
+            const bookIndex = borrowedBooks.findIndex(book => book.title === bookTitle);
+            if (bookIndex !== -1) {
+                const returnedBook = borrowedBooks.splice(bookIndex, 1)[0];
+                availableBooks.push(returnedBook);
+                renderAvailableBooks();
+                renderBorrowedBooks();
+            }
+        }
+
+        // Load books when the page loads
+        document.addEventListener('DOMContentLoaded', loadBooks);
+        function loadUserInfo() {
+    fetch('/user-info')
+        .then(response => response.json())
+        .then(data => {
+            if (data.username) {
+                document.getElementById('user-name').textContent = data.username;
+            } else {
+                console.error('Username not found.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user info:', error);
+        });
+}
+
+// Load user info when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch user info when the page loads
+    fetch('/user-info')
+        .then(response => response.json())
+        .then(data => {
+            // Check if the user data is returned successfully
+            if (data.username) {
+                document.getElementById('user-name').textContent = data.username;
+            } else {
+                console.error('Error fetching user name:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
